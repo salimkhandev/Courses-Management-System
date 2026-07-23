@@ -91,7 +91,7 @@ export default function HomePage() {
           <div className="md:col-span-4 flex justify-center">
             <div className="w-48 h-48 rounded-full border-4 border-amber-500/30 overflow-hidden bg-slate-900 flex items-center justify-center">
               <Image 
-                src="/image.png" 
+                src="/profile.jpg" 
                 alt="Hafiz Mujeeb ur Rahman" 
                 width={192} 
                 height={192} 
