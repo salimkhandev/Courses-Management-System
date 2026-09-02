@@ -3,9 +3,10 @@ import Course from '../lib/models/Course';
 import User from '../lib/models/User';
 import Payment from '../lib/models/Payment';
 import Progress from '../lib/models/Progress';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import fs from 'fs';
+import path from 'path';
 
-const BUCKET = process.env.R2_BUCKET_NAME!;
+const BACKUP_DIR = process.env.BACKUP_DIR || './backups';
 
 async function runBackup() {
   console.log('[Backup] Starting database serialization...');
@@ -32,35 +33,23 @@ async function runBackup() {
   };
 
   const jsonString = JSON.stringify(backupData, null, 2);
-  const buffer = Buffer.from(jsonString, 'utf-8');
 
-  // 2. Build S3 target key
+  // 2. Ensure backup directory exists
+  if (!fs.existsSync(BACKUP_DIR)) {
+    fs.mkdirSync(BACKUP_DIR, { recursive: true });
+  }
+
+  // 3. Build local backup file path
   const timestamp = Date.now();
-  const prefix = process.env.R2_KEY_PREFIX ?? '';
-  const key = `${prefix}backups/db-backup-${timestamp}.json`;
+  const filename = `db-backup-${timestamp}.json`;
+  const filePath = path.join(BACKUP_DIR, filename);
 
-  console.log(`[Backup] Serialization complete. Uploading ${buffer.length} bytes to R2: ${key}...`);
+  console.log(`[Backup] Serialization complete. Saving ${jsonString.length} bytes to local file: ${filePath}...`);
 
-  // 3. Upload directly to Cloudflare R2
-  const client = new S3Client({
-    region: 'auto',
-    endpoint: process.env.R2_ENDPOINT,
-    credentials: {
-      accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-    },
-  });
+  // 4. Write backup to local file system
+  fs.writeFileSync(filePath, jsonString, 'utf-8');
 
-  await client.send(
-    new PutObjectCommand({
-      Bucket: BUCKET,
-      Key: key,
-      Body: buffer,
-      ContentType: 'application/json',
-    })
-  );
-
-  console.log('[Backup] Backup successfully uploaded to R2.');
+  console.log('[Backup] Backup successfully saved to local file system.');
 }
 
 runBackup()

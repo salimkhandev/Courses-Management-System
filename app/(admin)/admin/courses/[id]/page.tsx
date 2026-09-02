@@ -10,7 +10,7 @@ interface VideoFormItem {
   order: number;
   title: string;
   duration: number; // seconds
-  r2Key: string;
+  localPath: string;
   sizeBytes: number;
   // Local state helper for uploads
   uploading?: boolean;
@@ -44,7 +44,7 @@ export default function EditCoursePage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState(5000);
-  const [thumbnailKey, setThumbnailKey] = useState('');
+  const [localThumbnailPath, setLocalThumbnailPath] = useState('');
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   
   const [videos, setVideos] = useState<VideoFormItem[]>([]);
@@ -70,7 +70,7 @@ export default function EditCoursePage() {
         setTitle(data.title);
         setDescription(data.description);
         setPrice(data.price ?? 5000);
-        setThumbnailKey(data.thumbnailKey);
+        setLocalThumbnailPath(data.localThumbnailPath);
         setThumbnailUrl(data.thumbnailUrl || '');
         setVideos(data.videos || []);
       } catch (err: any) {
@@ -95,41 +95,23 @@ export default function EditCoursePage() {
 
     setError('');
     try {
-      const urlRes = await fetch('/api/upload/thumbnail', {
+      // Upload directly to local storage using FormData
+      const formData = new FormData();
+      formData.append('file', compressedBlob);
+      formData.append('filename', file.name);
+
+      const uploadRes = await fetch('/api/upload/thumbnail', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contentType: file.type, filename: file.name }),
-      });
-      
-      if (!urlRes.ok) {
-        const d = await urlRes.json();
-        throw new Error(d.error || 'Failed to get upload URL');
-      }
-
-      const { url, key, isGoogleDrive } = await urlRes.json();
-
-      const uploadRes = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': file.type },
-        body: compressedBlob,
+        body: formData
       });
 
       if (!uploadRes.ok) {
-        const errorText = await uploadRes.text();
-        console.error('Thumbnail upload failed:', uploadRes.status, errorText);
-        throw new Error(`Failed to upload thumbnail: ${uploadRes.status} ${errorText}`);
+        const d = await uploadRes.json();
+        throw new Error(d.error || 'Failed to upload thumbnail');
       }
 
-      if (isGoogleDrive) {
-        // Google Drive resumable upload returns the file metadata upon completion
-        const fileMetadata = await uploadRes.json();
-        setThumbnailKey(fileMetadata.id); // store driveFileId in thumbnailKey state temporarily
-      } else {
-        /*
-        setThumbnailKey(key);
-        */
-      }
-      
+      const { localPath } = await uploadRes.json();
+      setLocalThumbnailPath(localPath);
       setThumbnailUrl(URL.createObjectURL(file));
     } catch (err: any) {
       setError(err.message);
@@ -150,79 +132,49 @@ export default function EditCoursePage() {
       // 1. Get duration and size
       const { duration, size } = await getVideoDurationAndSize(videoFile);
 
-      // 2. Create a Drive resumable upload session
-      const urlRes = await fetch('/api/upload/video', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contentType: videoFile.type, filename: videoFile.name }),
+      // 2. Upload with progress tracking using XMLHttpRequest
+      const formData = new FormData();
+      formData.append('file', videoFile);
+      formData.append('filename', videoFile.name);
+
+      const localPath = await new Promise<string>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/upload/video', true);
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const progress = Math.round((event.loaded / event.total) * 100);
+            setVideoUploadProgress(progress);
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              resolve(response.localPath);
+            } catch {
+              reject(new Error('Invalid response from server'));
+            }
+          } else {
+            try {
+              const d = JSON.parse(xhr.responseText);
+              reject(new Error(d.error || 'Failed to upload video'));
+            } catch {
+              reject(new Error('Failed to upload video'));
+            }
+          }
+        };
+
+        xhr.onerror = () => reject(new Error('Upload failed'));
+        xhr.send(formData);
       });
 
-      if (!urlRes.ok) {
-        const d = await urlRes.json();
-        throw new Error(d.error || 'Failed to get video upload URL');
-      }
-
-      const { url, key, isGoogleDrive } = await urlRes.json();
-
-      let finalKey = key;
-      let finalDriveFileId: string | undefined;
-
-      if (isGoogleDrive) {
-        // Google Drive resumable upload: send file in 10 MB chunks
-        const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB
-        const totalSize = videoFile.size;
-        let offset = 0;
-        let driveFileId = '';
-
-        while (offset < totalSize) {
-          const end = Math.min(offset + CHUNK_SIZE, totalSize);
-          const chunk = videoFile.slice(offset, end);
-
-          const chunkRes = await fetch(url, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': videoFile.type,
-              'Content-Range': `bytes ${offset}-${end - 1}/${totalSize}`,
-            },
-            body: chunk,
-          });
-
-          // 308 = Resume Incomplete (more chunks needed)
-          // 200 / 201 = upload complete
-          if (chunkRes.status === 200 || chunkRes.status === 201) {
-            const metadata = await chunkRes.json();
-            driveFileId = metadata.id;
-          } else if (chunkRes.status !== 308) {
-            const errText = await chunkRes.text();
-            throw new Error(`Chunk upload failed at offset ${offset}: ${chunkRes.status} ${errText}`);
-          }
-
-          offset = end;
-          setVideoUploadProgress(Math.round((offset / totalSize) * 100));
-        }
-
-        finalDriveFileId = driveFileId;
-        finalKey = '';
-      } else {
-        // Non-Drive presigned URL (e.g. R2): single PUT
-        /*
-        const uploadRes = await fetch(url, {
-          method: 'PUT',
-          headers: { 'Content-Type': videoFile.type },
-          body: videoFile,
-        });
-        if (!uploadRes.ok) {
-          throw new Error(`Video upload failed: ${uploadRes.status}`);
-        }
-        */
-      }
-
-      const newVideo: VideoFormItem & { driveFileId?: string } = {
+      const newVideo: VideoFormItem = {
         order: videos.length + 1,
         title: videoTitleInput,
         duration,
-        r2Key: finalKey,
-        driveFileId: finalDriveFileId,
+        localPath: localPath,
         sizeBytes: size,
       };
 
@@ -268,15 +220,11 @@ export default function EditCoursePage() {
     setError('');
 
     try {
-      const isDriveThumbnail = thumbnailKey && !thumbnailKey.includes('.'); // R2 keys usually have an extension, Drive IDs don't. But to be safer, we can pass both or just send it as driveThumbnailId if it doesn't look like a path.
-      // Wait, we can add a state for driveThumbnailId!
-      
       const payload = {
         title,
         description,
         price,
-        thumbnailKey: thumbnailKey,
-        driveThumbnailId: thumbnailKey && !thumbnailKey.includes('/') ? thumbnailKey : undefined, // Drive IDs are alphanumeric/dashes, R2 keys have 'thumbnails/...'
+        localThumbnailPath: localThumbnailPath,
         videos,
       };
 
@@ -452,8 +400,8 @@ export default function EditCoursePage() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {videos.map((v, i) => (
-              <div 
-                key={v.id || v.r2Key} 
+              <div
+                key={`${v.order}-${v.localPath || i}`}
                 className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-md"
                 style={{ 
                   background: 'var(--surface-1)', 

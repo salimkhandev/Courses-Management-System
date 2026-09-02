@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { createResumableUploadSession, DRIVE_FOLDERS } from '@/lib/gdrive';
+import { uploadFile } from '@/lib/localStorage';
 
 export async function POST(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -10,36 +10,33 @@ export async function POST(req: NextRequest) {
 
   // TODO: Add rate limit check (Batch 10)
 
-  const { contentType, filename } = (await req.json()) ?? {};
-  if (!contentType?.startsWith('video/')) {
-    return NextResponse.json({ error: 'Invalid file type. Must be a video.' }, { status: 400 });
-  }
-
-  // Clean filename for safety
-  const safeName = filename?.replace(/[^a-zA-Z0-9.-]/g, '_') || 'video.mp4';
-  const timestamp = Date.now();
-  const driveFileName = `${timestamp}-${safeName}`;
-
   try {
-    const origin = req.headers.get('origin') || process.env.NEXTAUTH_URL || 'https://sunrise-english-language-and-skill.onrender.com';
-    const { uploadUrl } = await createResumableUploadSession(
-      driveFileName,
-      contentType,
-      DRIVE_FOLDERS.VIDEOS,
-      origin
-    );
+    const formData = await req.formData();
+    const file = formData.get('file') as File;
+    const filename = formData.get('filename') as string;
 
-    // We still return 'key' as 'driveFileName' temporarily for backward compatibility in frontend component state if needed,
-    // although we don't have the fileId yet because the upload hasn't finished.
-    // Wait, the client doesn't need fileId upfront, it needs the url.
-    // Actually, in the current R2 flow, the client submits the 'key' (which is the path) back to the backend when saving the course.
-    // With Drive, the client uploads directly to the session URL. But how do we get the fileId?
-    // The resumable upload response returns the completed file metadata, including `id`.
-    // The client MUST return that `id` to the backend when saving the course.
-    // So the client just needs the `uploadUrl`.
-    return NextResponse.json({ url: uploadUrl, isGoogleDrive: true });
+    if (!file) {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    }
+
+    if (!file.type.startsWith('video/')) {
+      return NextResponse.json({ error: 'Invalid file type. Must be a video.' }, { status: 400 });
+    }
+
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Upload to local storage
+    const localPath = await uploadFile(buffer, filename || file.name, 'video');
+
+    return NextResponse.json({ 
+      localPath,
+      isLocalStorage: true,
+      filename: filename || file.name
+    });
   } catch (error: any) {
-    console.error('Video upload session creation failed:', error);
-    return NextResponse.json({ error: 'Failed to create upload session' }, { status: 500 });
+    console.error('Video upload failed:', error);
+    return NextResponse.json({ error: 'Failed to upload video' }, { status: 500 });
   }
 }

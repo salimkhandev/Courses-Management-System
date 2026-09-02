@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { createResumableUploadSession, DRIVE_FOLDERS } from '@/lib/gdrive';
+import { uploadFile } from '@/lib/localStorage';
 
 export async function POST(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -13,26 +13,37 @@ export async function POST(req: NextRequest) {
 
   // TODO: Add rate limit check (Batch 10)
 
-  const { contentType } = (await req.json()) ?? {};
-  if (!contentType?.startsWith('image/')) {
-    return NextResponse.json({ error: 'Invalid file type. Must be an image.' }, { status: 400 });
-  }
-
-  const timestamp = Date.now();
-  const driveFileName = `${token.id}-${timestamp}.jpg`;
-  
   try {
-    const origin = req.headers.get('origin') || process.env.NEXTAUTH_URL || 'https://sunrise-english-language-and-skill.onrender.com';
-    const { uploadUrl } = await createResumableUploadSession(
-      driveFileName,
-      contentType,
-      DRIVE_FOLDERS.RECEIPTS,
-      origin
-    );
+    const formData = await req.formData();
+    const file = formData.get('file') as File;
+    const filename = formData.get('filename') as string;
 
-    return NextResponse.json({ url: uploadUrl, isGoogleDrive: true });
+    if (!file) {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    }
+
+    if (!file.type.startsWith('image/')) {
+      return NextResponse.json({ error: 'Invalid file type. Must be an image.' }, { status: 400 });
+    }
+
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Create filename with user ID
+    const timestamp = Date.now();
+    const safeFilename = `${token.id}-${timestamp}.jpg`;
+
+    // Upload to local storage
+    const localPath = await uploadFile(buffer, safeFilename, 'receipt');
+
+    return NextResponse.json({ 
+      localPath,
+      isLocalStorage: true,
+      filename: safeFilename
+    });
   } catch (error: any) {
-    console.error('Screenshot upload session creation failed:', error);
-    return NextResponse.json({ error: 'Failed to create upload session' }, { status: 500 });
+    console.error('Screenshot upload failed:', error);
+    return NextResponse.json({ error: 'Failed to upload screenshot' }, { status: 500 });
   }
 }

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db';
 import Course from '@/lib/models/Course';
-import { getPresignedGetUrl } from '@/lib/r2';
+import { getLocalFileUrl } from '@/lib/localStorage';
 import { Video, Clock, Lock as LockIcon } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -34,8 +34,8 @@ export default async function CourseDetailPage({ params }: Props) {
   const course = await Course.findById(id).lean();
   if (!course) notFound();
 
-  const thumbnailUrl = course.thumbnailKey
-    ? await getPresignedGetUrl(course.thumbnailKey, 3600)
+  const thumbnailUrl = course.localThumbnailPath
+    ? getLocalFileUrl(course.localThumbnailPath)
     : null;
 
   const videos = [...course.videos].sort((a, b) => a.order - b.order);
@@ -46,7 +46,7 @@ export default async function CourseDetailPage({ params }: Props) {
       {/* Back link */}
       <Link
         href="/courses"
-        className="inline-flex items-center gap-1.5 text-sm text-slate-500 no-underline mb-8 hover:text-slate-400 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-slate-600 no-underline mb-8 hover:text-slate-900 transition-colors"
       >
         ← All courses
       </Link>
@@ -57,10 +57,10 @@ export default async function CourseDetailPage({ params }: Props) {
           <h1 className="text-2xl font-bold sm:text-3xl lg:text-4xl mb-4 leading-tight">
             {course.title}
           </h1>
-          <p className="text-slate-400 leading-relaxed mb-6">
+          <p className="text-slate-600 leading-relaxed mb-6">
             {course.description}
           </p>
-          <div className="flex gap-6 text-slate-500 text-sm mb-8">
+          <div className="flex gap-6 text-slate-600 text-sm mb-8">
             <span className="flex items-center gap-2">
               <Video className="w-4 h-4" />
               {videos.length} videos
@@ -72,7 +72,7 @@ export default async function CourseDetailPage({ params }: Props) {
           </div>
           <Link
             href="/register"
-            className="inline-flex px-7 py-3 bg-amber-500 text-slate-950 font-bold rounded-lg no-underline text-base hover:bg-amber-600 transition-colors"
+            className="inline-flex px-7 py-3 bg-amber-500 text-slate-900 font-bold rounded-lg no-underline text-base hover:bg-amber-600 transition-colors"
           >
             Enroll — create free account
           </Link>
@@ -84,7 +84,7 @@ export default async function CourseDetailPage({ params }: Props) {
             <img
               src={thumbnailUrl}
               alt={course.title}
-              className="w-full rounded-lg border border-slate-700"
+              className="w-full rounded-lg border border-slate-300"
             />
           </div>
         )}
@@ -94,24 +94,24 @@ export default async function CourseDetailPage({ params }: Props) {
       <h2 className="text-xl font-semibold mb-4">
         Course Content
       </h2>
-      <div className="border border-slate-700 rounded-lg overflow-hidden">
+      <div className="border border-slate-300 rounded-lg overflow-hidden">
         {videos.map((video, i) => (
           <div
             key={video._id.toString()}
-            className={`flex items-center gap-4 px-5 py-3.5 bg-slate-900 ${
-              i < videos.length - 1 ? 'border-b border-slate-700' : ''
+            className={`flex items-center gap-4 px-5 py-3.5 bg-slate-50 ${
+              i < videos.length - 1 ? 'border-b border-slate-300' : ''
             }`}
           >
-            <span className="w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-xs text-slate-500 flex-shrink-0 font-semibold">
+            <span className="w-7 h-7 rounded-full bg-slate-200 flex items-center justify-center text-xs text-slate-600 flex-shrink-0 font-semibold">
               {video.order}
             </span>
-            <span className="flex-1 text-sm text-slate-100">
+            <span className="flex-1 text-sm text-slate-900">
               {video.title}
             </span>
-            <span className="text-xs text-slate-500 flex-shrink-0">
+            <span className="text-xs text-slate-600 flex-shrink-0">
               {formatDuration(video.duration)}
             </span>
-            <LockIcon className="w-4 h-4 text-slate-500" />
+            <LockIcon className="w-4 h-4 text-slate-400" />
           </div>
         ))}
       </div>

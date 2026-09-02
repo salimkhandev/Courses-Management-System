@@ -7,7 +7,7 @@ interface CourseItem {
   id: string;
   title: string;
   description: string;
-  thumbnailKey: string;
+  localThumbnailPath: string;
   videoCount: number;
 }
 

@@ -29,48 +29,31 @@ export default function NewCoursePage() {
     setLoading(true);
 
     try {
-      // 1. Get presigned upload URL from server
-      const urlRes = await fetch('/api/upload/thumbnail', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contentType: file.type, filename: file.name })
-      });
-      
-      if (!urlRes.ok) {
-        const d = await urlRes.json();
-        throw new Error(d.error || 'Failed to get upload URL');
-      }
-      
-      const { url, key, isGoogleDrive } = await urlRes.json();
-
-      // 2. Compress then upload directly
+      // 1. Compress the image
       const compressedBlob = await compressImage(file, 800, 800, 0.7);
-      const uploadRes = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': file.type },
-        body: compressedBlob
+      
+      // 2. Upload directly to local storage using FormData
+      const formData = new FormData();
+      formData.append('file', compressedBlob);
+      formData.append('filename', file.name);
+
+      const uploadRes = await fetch('/api/upload/thumbnail', {
+        method: 'POST',
+        body: formData
       });
 
       if (!uploadRes.ok) {
-        const errorText = await uploadRes.text();
-        console.error('Thumbnail upload failed:', uploadRes.status, errorText);
-        throw new Error(`Failed to upload thumbnail: ${uploadRes.status} ${errorText}`);
+        const d = await uploadRes.json();
+        throw new Error(d.error || 'Failed to upload thumbnail');
       }
 
-      let finalKey = key;
-      let finalDriveFileId = undefined;
-
-      if (isGoogleDrive) {
-        const fileMetadata = await uploadRes.json();
-        finalDriveFileId = fileMetadata.id;
-        finalKey = '';
-      }
+      const { localPath } = await uploadRes.json();
 
       // 3. Create the Course document in MongoDB
       const createRes = await fetch('/api/admin/courses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description, price, thumbnailKey: finalKey, driveThumbnailId: finalDriveFileId })
+        body: JSON.stringify({ title, description, price, localThumbnailPath: localPath })
       });
 
       if (!createRes.ok) {

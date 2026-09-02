@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import Course from '@/lib/models/Course';
-import { getPresignedGetUrl } from '@/lib/r2';
+import { getLocalFileUrl } from '@/lib/localStorage';
 import mongoose from 'mongoose';
 
 export async function GET(
@@ -21,11 +21,9 @@ export async function GET(
     return NextResponse.json({ error: 'Course not found.' }, { status: 404 });
   }
 
-  const thumbnailUrl = course.thumbnailKey
-    ? await getPresignedGetUrl(course.thumbnailKey, 3600)
-    : null;
+  const thumbnailUrl = course.localThumbnailPath ? getLocalFileUrl(course.localThumbnailPath) : null;
 
-  // Return video metadata but NOT the r2Key — students see the player via /watch, not direct URLs
+  // Return video metadata but NOT the localPath — students see the player via /watch, not direct URLs
   const videos = course.videos
     .sort((a, b) => a.order - b.order)
     .map((v) => ({

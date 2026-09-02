@@ -14,21 +14,21 @@ const OFFLINE_PAGES = [
   },
   {
     href: '/about',
-    icon: <BookOpen className="w-6 h-6 text-slate-400" />,
+    icon: <BookOpen className="w-6 h-6 text-slate-600" />,
     label: 'About Us',
     desc: 'Learn more about Sunrise Academy.',
     highlight: false,
   },
   {
     href: '/terms',
-    icon: <FileText className="w-6 h-6 text-slate-400" />,
+    icon: <FileText className="w-6 h-6 text-slate-600" />,
     label: 'Terms & Conditions',
     desc: 'Read our terms of service.',
     highlight: false,
   },
   {
     href: '/refund',
-    icon: <ShieldCheck className="w-6 h-6 text-slate-400" />,
+    icon: <ShieldCheck className="w-6 h-6 text-slate-600" />,
     label: 'Refund Policy',
     desc: 'Understand our refund policy.',
     highlight: false,
@@ -49,10 +49,10 @@ export default function OfflineAwareHome({ children }: { children: React.ReactNo
         You are offline
       </div>
 
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100 mb-3">
+      <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3">
         No internet connection
       </h1>
-      <p className="text-slate-400 text-base sm:text-lg max-w-md mx-auto mb-12">
+      <p className="text-slate-600 text-base sm:text-lg max-w-md mx-auto mb-12">
         Don't worry — your downloaded videos are still available. Visit the pages below that work without internet.
       </p>
 
@@ -65,17 +65,17 @@ export default function OfflineAwareHome({ children }: { children: React.ReactNo
             className={`flex items-center gap-4 text-left px-5 py-4 rounded-xl no-underline transition-all border ${
               page.highlight
                 ? 'bg-amber-500/10 border-amber-500/40 hover:bg-amber-500/20'
-                : 'bg-slate-900 border-slate-700 hover:border-slate-600'
+                : 'bg-slate-50 border-slate-200 hover:border-slate-300'
             }`}
           >
             <div className="shrink-0">{page.icon}</div>
             <div>
-              <div className={`font-semibold text-base ${page.highlight ? 'text-amber-400' : 'text-slate-200'}`}>
+              <div className={`font-semibold text-base ${page.highlight ? 'text-amber-600' : 'text-slate-900'}`}>
                 {page.label}
               </div>
-              <div className="text-xs text-slate-400 mt-0.5">{page.desc}</div>
+              <div className="text-xs text-slate-600 mt-0.5">{page.desc}</div>
             </div>
-            <span className="ml-auto text-slate-500">→</span>
+            <span className="ml-auto text-slate-400">→</span>
           </Link>
         ))}
       </div>
@@ -83,7 +83,7 @@ export default function OfflineAwareHome({ children }: { children: React.ReactNo
       {/* Retry button */}
       <button
         onClick={() => window.location.reload()}
-        className="inline-flex items-center gap-2 px-6 py-2.5 border border-slate-700 text-slate-400 rounded-xl text-sm font-medium hover:border-slate-500 hover:text-slate-300 transition-colors"
+        className="inline-flex items-center gap-2 px-6 py-2.5 border border-slate-300 text-slate-600 rounded-xl text-sm font-medium hover:border-slate-400 hover:text-slate-900 transition-colors"
       >
         <RefreshCcw className="w-4 h-4" />
         Retry connection

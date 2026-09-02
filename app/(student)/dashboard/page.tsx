@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { connectDB } from '@/lib/db';
 import Course from '@/lib/models/Course';
-import { getPresignedGetUrl } from '@/lib/r2';
+import { getLocalFileUrl } from '@/lib/localStorage';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -26,17 +26,15 @@ export default async function StudentDashboardPage() {
   // Fetch only enrolled courses
   const courses = await Course.find({ _id: { $in: enrolledIds } }).sort({ createdAt: -1 }).lean();
 
-  const coursesWithUrls = await Promise.all(
-    courses.map(async (c) => ({
+  const coursesWithUrls = courses.map((c) => ({
       id: c._id.toString(),
       title: c.title,
       description: c.description,
       videoCount: c.videos.length,
       totalDuration: c.videos.reduce((acc, v) => acc + v.duration, 0),
-      thumbnailUrl: c.thumbnailKey ? await getPresignedGetUrl(c.thumbnailKey, 3600) : null,
+      thumbnailUrl: c.localThumbnailPath ? getLocalFileUrl(c.localThumbnailPath) : null,
       firstVideoId: c.videos.sort((a, b) => a.order - b.order)[0]?._id?.toString() || null,
-    }))
-  );
+    }));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--surface-0)' }}>
@@ -55,13 +53,6 @@ export default async function StudentDashboardPage() {
             </div>
 
             <div className="flex gap-3">
-              <Link
-                href="/tutor"
-                className="text-sm font-bold px-4 py-2 rounded-lg transition-colors flex items-center gap-2 shadow-lg hover:shadow-xl"
-                style={{ background: 'var(--brand-500)', color: '#0f172a', textDecoration: 'none' }}
-              >
-                🤖 AI Tutor
-              </Link>
               <Link
                 href="/downloads"
                 className="text-sm font-semibold px-4 py-2 border rounded-lg hover:bg-surface-2 transition-colors flex items-center gap-2"

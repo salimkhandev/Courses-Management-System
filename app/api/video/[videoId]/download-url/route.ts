@@ -3,7 +3,6 @@ import { getToken } from 'next-auth/jwt';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db';
 import Course from '@/lib/models/Course';
-import { getPresignedGetUrl } from '@/lib/r2';
 
 export async function GET(
   req: NextRequest,
@@ -41,16 +40,10 @@ export async function GET(
 
   const video = course.videos[0];
 
-  if (video.driveFileId) {
-    // With Google Drive proxying, the local URL acts as the download URL.
-    return NextResponse.json({ url: `/api/video/${videoId}/stream` });
+  if (!video.localPath) {
+    return NextResponse.json({ error: 'Video file missing.' }, { status: 404 });
   }
 
-  if (video.r2Key) {
-    // 6 hours expiry for OPFS download per §11
-    const url = await getPresignedGetUrl(video.r2Key, 21600);
-    return NextResponse.json({ url });
-  }
-
-  return NextResponse.json({ error: 'Video file missing.' }, { status: 404 });
+  // With local storage, the stream URL acts as the download URL
+  return NextResponse.json({ url: `/api/video/${videoId}/stream` });
 }

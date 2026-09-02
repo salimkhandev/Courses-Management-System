@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { getDriveStreamResponse, getDriveFileMetadata } from '@/lib/gdrive';
+import { getFile } from '@/lib/localStorage';
 
 export async function GET(
   req: NextRequest,
@@ -14,17 +14,25 @@ export async function GET(
   }
 
   try {
-    const driveRes = await getDriveStreamResponse(fileId, null);
+    const file = await getFile(fileId);
     
-    // We optionally get metadata to know the content type, but Drive API alt=media response
-    // already has the correct content-type header usually.
-    const metadata = await getDriveFileMetadata(fileId);
+    // Determine content type based on file extension
+    const ext = fileId.split('.').pop()?.toLowerCase() || '';
+    const contentTypes: Record<string, string> = {
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'gif': 'image/gif',
+      'webp': 'image/webp',
+      'pdf': 'application/pdf',
+    };
 
-    return new NextResponse(driveRes.body, {
+    const contentType = contentTypes[ext] || 'application/octet-stream';
+
+    return new NextResponse(file as any, {
       status: 200,
       headers: {
-        'Content-Type': metadata.mimeType || driveRes.headers.get('content-type') || 'application/octet-stream',
-        // Cache control to avoid re-fetching on every scroll in admin panel
+        'Content-Type': contentType,
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });

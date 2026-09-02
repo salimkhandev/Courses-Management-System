@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const MONGODB_URI = 'mongodb://salimkhandev-mydb:EzoVyYElNz203QFT@ac-3rpsnfb-shard-00-00.7js7std.mongodb.net:27017,ac-3rpsnfb-shard-00-01.7js7std.mongodb.net:27017,ac-3rpsnfb-shard-00-02.7js7std.mongodb.net:27017/ilmpath_dev?authSource=admin&tls=true&appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/courses-db';
 
 async function seed() {
   await mongoose.connect(MONGODB_URI);

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
+// MongoDB connection string - for local MongoDB, use: mongodb://localhost:27017/courses-db
+// For remote MongoDB, use your Atlas or other hosted connection string
+const MONGODB_URI = process.env.MONGODB_URI as string || 'mongodb://localhost:27017/courses-db';
 
 if (!MONGODB_URI) {
   throw new Error('MONGODB_URI is not defined in environment variables');

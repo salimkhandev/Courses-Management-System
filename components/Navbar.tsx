@@ -27,7 +27,7 @@ export default function Navbar() {
     : NAV_LINKS.filter(link => !link.href.startsWith('/courses') && !link.href.startsWith('/tutor'));
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-950/85 backdrop-blur-md border-b border-slate-800">
+    <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-slate-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-6">
           {/* Logo */}
@@ -47,8 +47,8 @@ export default function Navbar() {
                 href={link.href}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium no-underline transition-colors duration-150 ${
                   isActive(link.href)
-                    ? 'text-amber-400 bg-amber-500/10'
-                    : 'text-slate-400 hover:text-slate-300'
+                    ? 'text-amber-600 bg-amber-500/10'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {link.label}
@@ -61,7 +61,7 @@ export default function Navbar() {
             {!isOnline ? (
               <Link
                 href="/downloads"
-                className="text-sm font-semibold text-slate-950 bg-amber-500 no-underline px-4 py-1.5 rounded-md hover:bg-amber-600 transition-colors"
+                className="text-sm font-semibold text-slate-900 bg-amber-500 no-underline px-4 py-1.5 rounded-md hover:bg-amber-600 transition-colors"
               >
                 Offline Downloads
               </Link>
@@ -69,14 +69,14 @@ export default function Navbar() {
               <>
                 <Link
                   href={session.user.role === 'admin' ? '/admin' : '/dashboard'}
-                  className="text-sm text-slate-400 no-underline px-3 py-1.5 rounded-md hover:text-slate-300 transition-colors"
+                  className="text-sm text-slate-600 no-underline px-3 py-1.5 rounded-md hover:text-slate-900 transition-colors"
                 >
                   {session.user.role === 'admin' ? 'Admin Panel' : 'My Learning'}
                 </Link>
 
                 <button
                   onClick={() => signOut({ callbackUrl: '/' })}
-                  className="text-sm text-slate-500 bg-none border-none cursor-pointer px-3 py-1.5 hover:text-slate-400 transition-colors"
+                  className="text-sm text-slate-600 bg-none border-none cursor-pointer px-3 py-1.5 hover:text-slate-900 transition-colors"
                 >
                   Sign out
                 </button>
@@ -85,13 +85,13 @@ export default function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="text-sm text-slate-400 no-underline px-3 py-1.5 rounded-md hover:text-slate-300 transition-colors"
+                  className="text-sm text-slate-600 no-underline px-3 py-1.5 rounded-md hover:text-slate-900 transition-colors"
                 >
                   Sign in
                 </Link>
                 <Link
                   href="/register"
-                  className="text-sm font-semibold text-slate-950 bg-amber-500 no-underline px-4 py-1.5 rounded-md hover:bg-amber-600 transition-colors"
+                  className="text-sm font-semibold text-slate-900 bg-amber-500 no-underline px-4 py-1.5 rounded-md hover:bg-amber-600 transition-colors"
                 >
                   Get started
                 </Link>
@@ -102,7 +102,7 @@ export default function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden p-2 rounded-md text-slate-400 hover:text-slate-300 hover:bg-slate-800 transition-colors"
+            className="md:hidden p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
             aria-label="Toggle menu"
           >
             <svg
@@ -132,7 +132,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden py-4 border-t border-slate-800">
+          <div className="md:hidden py-4 border-t border-slate-200">
             <nav className="flex flex-col gap-2 mb-4">
               {visibleNavLinks.map((link) => (
                 <Link
@@ -141,20 +141,20 @@ export default function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className={`px-3 py-2 rounded-md text-sm font-medium no-underline transition-colors ${
                     isActive(link.href)
-                      ? 'text-amber-400 bg-amber-500/10'
-                      : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800'
+                      ? 'text-amber-600 bg-amber-500/10'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
             </nav>
-            <div className="flex flex-col gap-2 pt-4 border-t border-slate-800">
+            <div className="flex flex-col gap-2 pt-4 border-t border-slate-200">
               {!isOnline ? (
                 <Link
                   href="/downloads"
                   onClick={() => setMenuOpen(false)}
-                  className="text-sm font-semibold text-slate-950 bg-amber-500 no-underline px-4 py-2 rounded-md hover:bg-amber-600 transition-colors text-center"
+                  className="text-sm font-semibold text-slate-900 bg-amber-500 no-underline px-4 py-2 rounded-md hover:bg-amber-600 transition-colors text-center"
                 >
                   Offline Downloads
                 </Link>
@@ -163,7 +163,7 @@ export default function Navbar() {
                   <Link
                     href={session.user.role === 'admin' ? '/admin' : '/dashboard'}
                     onClick={() => setMenuOpen(false)}
-                    className="text-sm text-slate-400 no-underline px-3 py-2 rounded-md hover:text-slate-300 hover:bg-slate-800 transition-colors"
+                    className="text-sm text-slate-600 no-underline px-3 py-2 rounded-md hover:text-slate-900 hover:bg-slate-100 transition-colors"
                   >
                     {session.user.role === 'admin' ? 'Admin Panel' : 'My Learning'}
                   </Link>
@@ -173,7 +173,7 @@ export default function Navbar() {
                       signOut({ callbackUrl: '/' });
                       setMenuOpen(false);
                     }}
-                    className="text-sm text-slate-500 bg-none border-none cursor-pointer px-3 py-2 rounded-md hover:text-slate-400 hover:bg-slate-800 transition-colors text-left"
+                    className="text-sm text-slate-600 bg-none border-none cursor-pointer px-3 py-2 rounded-md hover:text-slate-900 hover:bg-slate-100 transition-colors text-left"
                   >
                     Sign out
                   </button>
@@ -183,14 +183,14 @@ export default function Navbar() {
                   <Link
                     href="/login"
                     onClick={() => setMenuOpen(false)}
-                    className="text-sm text-slate-400 no-underline px-3 py-2 rounded-md hover:text-slate-300 hover:bg-slate-800 transition-colors"
+                    className="text-sm text-slate-600 no-underline px-3 py-2 rounded-md hover:text-slate-900 hover:bg-slate-100 transition-colors"
                   >
                     Sign in
                   </Link>
                   <Link
                     href="/register"
                     onClick={() => setMenuOpen(false)}
-                    className="text-sm font-semibold text-slate-950 bg-amber-500 no-underline px-4 py-2 rounded-md hover:bg-amber-600 transition-colors text-center"
+                    className="text-sm font-semibold text-slate-900 bg-amber-500 no-underline px-4 py-2 rounded-md hover:bg-amber-600 transition-colors text-center"
                   >
                     Get started
                   </Link>

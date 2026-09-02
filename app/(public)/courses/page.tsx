@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { connectDB } from '@/lib/db';
 import Course from '@/lib/models/Course';
-import { getPresignedGetUrl } from '@/lib/r2';
+import { getLocalFileUrl } from '@/lib/localStorage';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import type { Metadata } from 'next';
@@ -26,17 +26,15 @@ export default async function CoursesPage() {
   await connectDB();
   const courses = await Course.find({}).sort({ createdAt: -1 }).lean();
 
-  const coursesWithUrls = await Promise.all(
-    courses.map(async (c) => ({
-      id: c._id.toString(),
-      title: c.title,
-      description: c.description,
-      price: c.price ?? 5000,
-      videoCount: c.videos.length,
-      totalDuration: c.videos.reduce((acc, v) => acc + v.duration, 0),
-      thumbnailUrl: c.driveThumbnailUrl ? c.driveThumbnailUrl : (c.thumbnailKey ? await getPresignedGetUrl(c.thumbnailKey, 3600) : null),
-    }))
-  );
+  const coursesWithUrls = courses.map((c) => ({
+    id: c._id.toString(),
+    title: c.title,
+    description: c.description,
+    price: c.price ?? 5000,
+    videoCount: c.videos.length,
+    totalDuration: c.videos.reduce((acc, v) => acc + v.duration, 0),
+    thumbnailUrl: c.localThumbnailPath ? getLocalFileUrl(c.localThumbnailPath) : null,
+  }));
 
   return (
     <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '3rem 1.5rem' }}>

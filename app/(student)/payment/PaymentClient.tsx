@@ -74,35 +74,20 @@ export default function PaymentClient() {
       // 1. Compress image locally (800x800, 70% quality for tiny size)
       const compressedBlob = await compressImage(file, 800, 800, 0.7);
       
-      // 2. Get presigned URL
-      const urlRes = await fetch('/api/upload/screenshot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contentType: 'image/jpeg' })
-      });
-      
-      if (!urlRes.ok) throw new Error('Failed to get upload URL');
-      const { url, key, isGoogleDrive } = await safeJson<{ url: string; key: string; isGoogleDrive?: boolean }>(urlRes);
+      // 2. Upload directly to local storage using FormData
+      const formData = new FormData();
+      formData.append('file', compressedBlob);
+      formData.append('filename', file.name);
 
-      // 3. Upload directly
-      const uploadRes = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'image/jpeg' },
-        body: compressedBlob
+      const uploadRes = await fetch('/api/upload/screenshot', {
+        method: 'POST',
+        body: formData
       });
 
       if (!uploadRes.ok) throw new Error('Failed to upload screenshot');
+      const { localPath } = await safeJson<{ localPath: string }>(uploadRes);
 
-      let finalKey = key;
-      let driveFileId = undefined;
-
-      if (isGoogleDrive) {
-        const fileMetadata = await safeJson<{ id: string }>(uploadRes);
-        driveFileId = fileMetadata.id;
-        finalKey = '';
-      }
-
-      // 4. Submit payment record to our DB
+      // 3. Submit payment record to our DB
       const submitRes = await fetch('/api/payment/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -110,8 +95,7 @@ export default function PaymentClient() {
           courseId: selectedCourseId,
           amount: courses.find(c => c.id === selectedCourseId)?.price ?? 0,
           paymentMethod: method,
-          screenshotKey: finalKey,
-          driveFileId: driveFileId,
+          localScreenshotPath: localPath,
         })
       });
 

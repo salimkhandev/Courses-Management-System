@@ -11,8 +11,7 @@ export interface IPayment extends Document {
   paymentMethod: string;
   amount: number;
   currency: string;
-  screenshotKey?: string;   // R2 object key — never a URL
-  driveFileId?: string;
+  localScreenshotPath: string;  // Local file path for VPS storage
   status: PaymentStatus;
   submittedAt: Date;
   reviewedAt: Date | null;
@@ -29,8 +28,7 @@ const PaymentSchema = new Schema<IPayment>(
     paymentMethod: { type: String, required: true },
     amount: { type: Number, required: true },
     currency: { type: String, default: 'PKR' },
-    screenshotKey: { type: String, required: false },
-    driveFileId: { type: String, required: false },
+    localScreenshotPath: { type: String, required: true },
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
     submittedAt: { type: Date, default: () => new Date() },
     reviewedAt: { type: Date, default: null },

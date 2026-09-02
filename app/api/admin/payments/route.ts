@@ -3,7 +3,6 @@ import { getToken } from 'next-auth/jwt';
 import { connectDB } from '@/lib/db';
 import Payment from '@/lib/models/Payment';
 import User from '@/lib/models/User';
-import { getPresignedGetUrl } from '@/lib/r2';
 import mongoose from 'mongoose';
 
 // List payments with their users
@@ -19,16 +18,7 @@ export async function GET(req: NextRequest) {
 
   const updatedPayments = await Promise.all(
     payments.map(async (p) => {
-      let screenshotUrl = null;
-      try {
-        if (p.driveFileId) {
-          screenshotUrl = `/api/admin/payments/receipt/${p.driveFileId}`;
-        } else if (p.screenshotKey) {
-          screenshotUrl = await getPresignedGetUrl(p.screenshotKey, 3600);
-        }
-      } catch (err) {
-        console.error('Failed to get URL for payment receipt', p._id, err);
-      }
+      const screenshotUrl = p.localScreenshotPath ? `/api/admin/payments/receipt/${p.localScreenshotPath}` : null;
       return {
         id: p._id.toString(),
         userId: p.userId.toString(),

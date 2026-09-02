@@ -49,35 +49,35 @@ export default function HomePage() {
         />
 
         <div className="relative max-w-4xl mx-auto">
-          <span className="inline-block bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full px-4 py-1 text-xs font-semibold tracking-widest uppercase mb-7">
+          <span className="inline-block bg-amber-500/10 border border-amber-500/30 text-amber-600 rounded-full px-4 py-1 text-xs font-semibold tracking-widest uppercase mb-7">
             Sunrise English Academy
           </span>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-slate-100 mb-6">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-slate-900 mb-6">
             Master English Language &{' '}
             <span className="text-amber-500">Communication Skills</span>
           </h1>
 
-          <p className="text-base sm:text-lg lg:text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto mb-10">
+          <p className="text-base sm:text-lg lg:text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto mb-10">
             Unlock professional opportunities and build global confidence. Learn online with experienced teacher <strong>Hafiz Mujeeb</strong>, stream lectures, or download and watch offline.
           </p>
 
           <div className="flex gap-4 justify-center flex-wrap">
             <Link
               href="/courses"
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-amber-500 text-slate-950 font-bold text-base rounded-xl no-underline hover:bg-amber-600 transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-amber-500 text-slate-900 font-bold text-base rounded-xl no-underline hover:bg-amber-600 transition-colors"
             >
               Browse Our Courses →
             </Link>
             <Link
               href="/tutor"
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-brand-500 text-slate-950 font-bold text-base rounded-xl no-underline hover:bg-brand-600 transition-colors shadow-lg hover:shadow-xl"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-brand-500 text-slate-900 font-bold text-base rounded-xl no-underline hover:bg-brand-600 transition-colors shadow-lg hover:shadow-xl"
             >
               🤖 Practice with AI Tutor
             </Link>
             <Link
               href="/register"
-              className="inline-flex items-center px-8 py-3.5 bg-slate-900 border border-slate-700 text-slate-100 font-semibold text-base rounded-xl no-underline hover:border-slate-600 transition-colors"
+              className="inline-flex items-center px-8 py-3.5 bg-slate-100 border border-slate-300 text-slate-900 font-semibold text-base rounded-xl no-underline hover:border-slate-400 transition-colors"
             >
               Create Free Account
             </Link>
@@ -86,10 +86,10 @@ export default function HomePage() {
       </section>
 
       {/* Instructor Section */}
-      <section className="px-6 py-20 sm:px-8 lg:px-12 border-t border-slate-900 bg-slate-950/40">
+      <section className="px-6 py-20 sm:px-8 lg:px-12 border-t border-slate-200 bg-slate-50/40">
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           <div className="md:col-span-4 flex justify-center">
-            <div className="w-48 h-48 rounded-full border-4 border-amber-500/30 overflow-hidden bg-slate-900 flex items-center justify-center">
+            <div className="w-48 h-48 rounded-full border-4 border-amber-500/30 overflow-hidden bg-slate-100 flex items-center justify-center">
               <Image 
                 src="/profile.jpg" 
                 alt="Hafiz Mujeeb ur Rahman" 
@@ -100,9 +100,9 @@ export default function HomePage() {
             </div>
           </div>
           <div className="md:col-span-8 text-center md:text-left">
-            <span className="text-amber-400 text-sm font-semibold uppercase tracking-wider">Meet Your Instructor</span>
-            <h2 className="text-3xl font-extrabold text-slate-100 mt-2 mb-4">Hafiz Mujeeb ur Rahman</h2>
-            <p className="text-slate-400 leading-relaxed mb-6">
+            <span className="text-amber-600 text-sm font-semibold uppercase tracking-wider">Meet Your Instructor</span>
+            <h2 className="text-3xl font-extrabold text-slate-900 mt-2 mb-4">Hafiz Mujeeb ur Rahman</h2>
+            <p className="text-slate-600 leading-relaxed mb-6">
               Dedicated educator committed to delivering premium quality English language training and professional skill sets. Hafiz Mujeeb conducts structured online courses designed for students, job seekers, and working professionals in Pakistan and globally.
             </p>
             <div className="flex gap-3 justify-center md:justify-start flex-wrap">
@@ -142,12 +142,12 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="px-6 py-20 sm:px-8 lg:px-12 border-t border-slate-800 bg-slate-900">
+      <section className="px-6 py-20 sm:px-8 lg:px-12 border-t border-slate-200 bg-slate-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-2">
             App Features
           </h2>
-          <p className="text-center text-slate-400 mb-14 text-base sm:text-lg">
+          <p className="text-center text-slate-600 mb-14 text-base sm:text-lg">
             Practical modules optimized for internet conditions in Pakistan — low bandwidth, offline-friendly.
           </p>
 
@@ -158,7 +158,7 @@ export default function HomePage() {
                 <h3 className="font-semibold mb-2 text-base sm:text-lg">
                   {f.title}
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-slate-600 text-sm leading-relaxed">
                   {f.desc}
                 </p>
               </div>
@@ -168,7 +168,7 @@ export default function HomePage() {
       </section>
 
       {/* Contact Info and Social Links */}
-      <section className="px-6 py-20 sm:px-8 lg:px-12 border-t border-slate-800 bg-slate-950/20">
+      <section className="px-6 py-20 sm:px-8 lg:px-12 border-t border-slate-200 bg-slate-50/20">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-8">Get In Touch</h2>
           
@@ -177,9 +177,9 @@ export default function HomePage() {
               <div className="flex items-center gap-3 text-amber-500 font-semibold">
                 <Phone className="w-5 h-5" /> Phone & WhatsApp
               </div>
-              <p className="text-slate-300 text-sm flex flex-col gap-1">
-                <a href="https://wa.me/923425015034" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">0342-5015034</a>
-                <a href="https://wa.me/923185263800" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">0318-5263800</a>
+              <p className="text-slate-600 text-sm flex flex-col gap-1">
+                <a href="https://wa.me/923425015034" target="_blank" rel="noopener noreferrer" className="hover:text-amber-600 transition-colors">0342-5015034</a>
+                <a href="https://wa.me/923185263800" target="_blank" rel="noopener noreferrer" className="hover:text-amber-600 transition-colors">0318-5263800</a>
               </p>
             </div>
             
@@ -187,8 +187,8 @@ export default function HomePage() {
               <div className="flex items-center gap-3 text-amber-500 font-semibold">
                 <Mail className="w-5 h-5" /> Email Address
               </div>
-              <p className="text-slate-300 text-sm">
-                <a href="mailto:sunriseacademy1122@gmail.com" className="hover:text-amber-400 transition-colors">sunriseacademy1122@gmail.com</a>
+              <p className="text-slate-600 text-sm">
+                <a href="mailto:sunriseacademy1122@gmail.com" className="hover:text-amber-600 transition-colors">sunriseacademy1122@gmail.com</a>
               </p>
             </div>
 
@@ -196,8 +196,8 @@ export default function HomePage() {
               <div className="flex items-center gap-3 text-amber-500 font-semibold">
                 <MapPin className="w-5 h-5" /> Location
               </div>
-              <p className="text-slate-300 text-sm">
-                <a href="https://maps.google.com/?q=Timergara,+Pakistan" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">Timergara, Pakistan</a>
+              <p className="text-slate-600 text-sm">
+                <a href="https://maps.google.com/?q=Timergara,+Pakistan" target="_blank" rel="noopener noreferrer" className="hover:text-amber-600 transition-colors">Timergara, Pakistan</a>
               </p>
             </div>
           </div>
@@ -207,25 +207,25 @@ export default function HomePage() {
               href="https://web.facebook.com/people/Sunrise-English-Language-Skills-Academy/61580749476897/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-400 hover:text-blue-500 transition-colors text-sm font-medium"
+              className="text-slate-600 hover:text-blue-600 transition-colors text-sm font-medium"
             >
               Facebook Profile
             </a>
-            <span className="text-slate-700">•</span>
+            <span className="text-slate-400">•</span>
             <a
               href="https://tiktok.com/@sunriseacademe1133"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-400 hover:text-pink-500 transition-colors text-sm font-medium"
+              className="text-slate-600 hover:text-pink-600 transition-colors text-sm font-medium"
             >
               TikTok
             </a>
-            <span className="text-slate-700">•</span>
+            <span className="text-slate-400">•</span>
             <a
               href="https://www.youtube.com/@HafizMujeeburRahman-y2d"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-400 hover:text-red-500 transition-colors text-sm font-medium"
+              className="text-slate-600 hover:text-red-600 transition-colors text-sm font-medium"
             >
               YouTube
             </a>
@@ -234,17 +234,17 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="px-6 py-20 sm:px-8 lg:px-12 text-center border-t border-slate-800 bg-slate-900/60">
+      <section className="px-6 py-20 sm:px-8 lg:px-12 text-center border-t border-slate-200 bg-slate-50/60">
         <div className="max-w-xl mx-auto">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
             Ready to Speak Fluent English?
           </h2>
-          <p className="text-slate-400 mb-8 text-base sm:text-lg">
+          <p className="text-slate-600 mb-8 text-base sm:text-lg">
             Create an account, enroll in our premium training, and unlock interactive video courses.
           </p>
           <Link
             href="/register"
-            className="inline-flex px-10 py-3.5 bg-amber-500 text-slate-950 font-bold text-base rounded-xl no-underline hover:bg-amber-600 transition-colors"
+            className="inline-flex px-10 py-3.5 bg-amber-500 text-slate-900 font-bold text-base rounded-xl no-underline hover:bg-amber-600 transition-colors"
           >
             Get Started Online
           </Link>

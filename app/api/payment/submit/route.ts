@@ -15,9 +15,9 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { amount, paymentMethod, screenshotKey, driveFileId, courseId } = body;
+  const { amount, paymentMethod, localScreenshotPath, courseId } = body;
 
-  if (!amount || !paymentMethod || (!screenshotKey && !driveFileId) || !courseId) {
+  if (!amount || !paymentMethod || !localScreenshotPath || !courseId) {
     return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
   }
 
@@ -31,8 +31,7 @@ export async function POST(req: Request) {
     email: token.email ?? '',
     amount: Number(amount),
     paymentMethod,
-    screenshotKey: screenshotKey || '',
-    driveFileId,
+    localScreenshotPath,
     status: 'pending',
   });
 

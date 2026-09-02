@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { connectDB } from '@/lib/db';
 import Course from '@/lib/models/Course';
-import { makeFilePublicAndGetThumbnail } from '@/lib/gdrive';
 
 export async function GET(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -18,7 +17,7 @@ export async function GET(req: NextRequest) {
     title: c.title,
     description: c.description,
     price: c.price,
-    thumbnailKey: c.thumbnailKey,
+    localThumbnailPath: c.localThumbnailPath,
     videoCount: c.videos.length,
   }));
 
@@ -31,29 +30,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { title, description, price, thumbnailKey, driveThumbnailId } = await req.json();
-  if (!title || !description || price === undefined || (!thumbnailKey && !driveThumbnailId)) {
+  const { title, description, price, localThumbnailPath } = await req.json();
+  if (!title || !description || price === undefined) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
   }
 
   await connectDB();
 
-  let driveThumbnailUrl = undefined;
-  if (driveThumbnailId) {
-    try {
-      const url = await makeFilePublicAndGetThumbnail(driveThumbnailId);
-      if (url) driveThumbnailUrl = url;
-    } catch (err) {
-      console.error('Failed to make thumbnail public', err);
-    }
-  }
-
   const course = await Course.create({
     title,
     description,
     price: Number(price),
-    thumbnailKey: thumbnailKey || '',
-    driveThumbnailUrl,
+    localThumbnailPath: localThumbnailPath || '',
     videos: [],
   });
 

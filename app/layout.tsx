@@ -18,18 +18,18 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#0f172a',
+  themeColor: '#ffffff',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} h-full`}>
+    <html lang="en" className={`${geist.variable} h-full`} data-scroll-behavior="smooth">
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Sunrise Academy" />
       </head>
-      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 antialiased">
+      <body className="min-h-full flex flex-col bg-white text-slate-900 antialiased">
         <AuthSessionProvider>{children}</AuthSessionProvider>
         <ServiceWorker />
         <PWAInstallButton />

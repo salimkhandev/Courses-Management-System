@@ -3,7 +3,6 @@ import { getToken } from 'next-auth/jwt';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db';
 import Course from '@/lib/models/Course';
-import { getPresignedGetUrl } from '@/lib/r2';
 
 export async function GET(
   req: NextRequest,
@@ -42,13 +41,7 @@ export async function GET(
 
   const video = course.videos[0];
 
-  // If we still have an r2Key and no driveFileId (backward compatibility)
-  if (!video.driveFileId && video.r2Key) {
-    const url = await getPresignedGetUrl(video.r2Key, 7200);
-    return NextResponse.json({ url });
-  }
-
-  if (!video.driveFileId) {
+  if (!video.localPath) {
     return NextResponse.json({ error: 'Video file missing.' }, { status: 404 });
   }
 
