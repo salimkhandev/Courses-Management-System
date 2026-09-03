@@ -81,7 +81,7 @@ BACKUP_DIR=/path/to/backups
 
 ### Important Notes
 1. **No Cloud Fallbacks**: All cloud service fallbacks have been removed
-2. **AI Features Removed**: Chat functionality and AI tutor have been completely removed
+2. **AI Features Removed**: All AI functionality including chat and AI tutor have been completely removed
 3. **Local Dependencies**: Application requires local MongoDB and local file storage
 4. **Backup Critical**: Regular backups of MongoDB and file storage are essential
 5. **Migration Documentation**: See MIGRATION.md for complete setup and backup instructions

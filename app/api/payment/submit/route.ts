@@ -38,5 +38,5 @@ export async function POST(req: Request) {
   // Update user status to pending so they can't submit again
   await User.findByIdAndUpdate(token.id, { status: 'pending' });
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, redirect: '/payment/pending' });
 }

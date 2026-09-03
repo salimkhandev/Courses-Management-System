@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Video, Layers } from 'lucide-react';
 
 interface CourseItem {
   id: string;
@@ -111,8 +112,8 @@ export default function AdminCoursesPage() {
                 >
                   {c.description}
                 </p>
-                <div className="text-xs text-muted mb-4">
-                  📹 {c.videoCount} video{c.videoCount !== 1 ? 's' : ''} uploaded
+                <div className="text-xs text-muted mb-4 flex items-center gap-1">
+                  <Video size={12} /> {c.videoCount} video{c.videoCount !== 1 ? 's' : ''} uploaded
                 </div>
               </div>
               

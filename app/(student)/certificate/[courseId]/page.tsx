@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import { connectDB } from '@/lib/db';
 import Course from '@/lib/models/Course';
 import Progress from '@/lib/models/Progress';
+import { GraduationCap } from 'lucide-react';
 
 type Props = { params: Promise<{ courseId: string }> };
 
@@ -104,8 +105,8 @@ export default async function CertificatePage({ params }: Props) {
           position: 'relative'
         }}
       >
-        <div style={{ position: 'absolute', top: '1rem', right: '1.5rem', fontSize: '1.5rem' }}>
-          🎓
+        <div style={{ position: 'absolute', top: '1rem', right: '1.5rem' }}>
+          <GraduationCap size={24} className="text-brand-400" />
         </div>
 
         <span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.2em', color: 'var(--brand-400)', fontWeight: 600 }}>
@@ -136,7 +137,7 @@ export default async function CertificatePage({ params }: Props) {
           
           <div style={{ textAlign: 'right' }}>
             <span style={{ display: 'block', fontSize: '0.8rem', color: '#64748b' }}>Authorized by</span>
-            <span style={{ fontSize: '1.1rem', fontFamily: 'serif', fontWeight: 600, color: 'var(--brand-500)' }}>Sunrise Academy Authority</span>
+            <span style={{ fontSize: '1.1rem', fontFamily: 'serif', fontWeight: 600, color: 'var(--brand-500)' }}>Eng Luqman Hafeez</span>
           </div>
         </div>
       </div>

@@ -1,0 +1,144 @@
+also there should be a tab of the registered student fo the success sales story ie if the std should be able to share the stories in text with the images shoiwng the sales
+
+
+I'll add a success stories section where students can share their sales achievements with text and images. Let me implement this feature.
+
+SuccessStory.ts
++57
+ 
+const SuccessStory: Model<ISuccessStory> =
+  mongoose.models.SuccessStory ?? mongoose.model<ISuccessStory>('SuccessStory', SuccessStorySchema);
+ 
+export default SuccessStory;
+
+localStorage.ts
++1
+  NOTIFICATIONS: path.join(STORAGE_BASE_DIR, 'notifications'),
+  SUCCESS_STORIES: path.join(STORAGE_BASE_DIR, 'success-stories'),
+};
+localStorage.ts
++1
+    await fs.mkdir(STORAGE_FOLDERS.NOTIFICATIONS, { recursive: true });
+    await fs.mkdir(STORAGE_FOLDERS.SUCCESS_STORIES, { recursive: true });
+  } catch (error) {
+localStorage.ts
++3
+-1
+7 hidden lines
+      return STORAGE_FOLDERS.NOTIFICATIONS;
+    case 'success-story':
+      return STORAGE_FOLDERS.SUCCESS_STORIES;
+    default:
+
+localStorage.ts
++2
+-2
+8 hidden lines
+  // Return relative path for database storage
+  const folderName = type === 'video' ? 'videos' : type === 'thumbnail' ? 'thumbnails' : type === 'receipt' ? 'receipts' : 'notifications';
+  const folderName = type === 'video' ? 'videos' : type === 'thumbnail' ? 'thumbnails' : type === 'receipt' ? 'receipts' : type === 'notification' ? 'notifications' : 'success-stories';
+  return path.join(folderName, filename);
+
+page.tsx
++536
+        )}
+      </div>
+    </div>
+  );
+}
+
+route.ts
++89
+      { error: 'Failed to create success story' },
+      { status: 500 }
+    );
+  }
+}
+
+route.ts
++27
+      { error: 'Failed to fetch my success stories' },
+      { status: 500 }
+    );
+  }
+}
+
+route.ts
++35
+      { error: 'Failed to like success story' },
+      { status: 500 }
+    );
+  }
+}
+
+page.tsx
++442
+        )}
+      </div>
+    </div>
+  );
+}
+
+route.ts
++27
+      { error: 'Failed to fetch success stories' },
+      { status: 500 }
+    );
+  }
+}
+
+route.ts
++35
+      { error: 'Failed to approve success story' },
+      { status: 500 }
+    );
+  }
+}
+
+route.ts
++35
+      { error: 'Failed to reject success story' },
+      { status: 500 }
+    );
+  }
+}
+
+route.ts
++37
+      { error: 'Failed to toggle featured status' },
+      { status: 500 }
+    );
+  }
+}
+
+page.tsx
++1
+-1
+import { authOptions } from '@/lib/auth';
+import { Video, Clock, Download, GraduationCap, Users, MessageSquare, Bell, Award } from 'lucide-react';
+import { Video, Clock, Download, GraduationCap, Users, MessageSquare, Bell, Award, TrendingUp } from 'lucide-react';
+ 
+page.tsx
++7
+                style={{ color: 'var(--text-secondary)', borderColor: 'var(--surface-2)', textDecoration: 'none' }}
+              >
+                <TrendingUp size={16} /> Success Stories
+              </Link>
+            </div>
+
+page.tsx
++1
+-1
+import Link from 'next/link';
+import { Check, X, Layers, Users, Bell, Award } from 'lucide-react';
+import { Check, X, Layers, Users, Bell, Award, TrendingUp } from 'lucide-react';
+ 
+Read
+page.tsx
+#L95-109
+
+
+
+
+
+

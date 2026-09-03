@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { safeJson } from '@/lib/safeJson';
 import Link from 'next/link';
+import { Check, X, Layers, Users, Bell, Award, TrendingUp } from 'lucide-react';
 
 interface PaymentItem {
   id: string;
@@ -78,13 +79,36 @@ export default function AdminDashboard() {
         <h1 style={{ fontSize: 'clamp(1.1rem, 4vw, 1.5rem)', fontWeight: 700 }}>
           Payment Approvals
         </h1>
-        <Link
-          href="/admin/courses"
-          className="btn-primary"
-          style={{ textDecoration: 'none', fontSize: '0.8rem', padding: '0.5rem 1rem' }}
-        >
-          📚 Manage Courses
-        </Link>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <Link
+            href="/admin/courses"
+            className="btn-primary"
+            style={{ textDecoration: 'none', fontSize: '0.8rem', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <Layers size={16} /> Manage Courses
+          </Link>
+          <Link
+            href="/admin/physical-classes"
+            className="btn-primary"
+            style={{ textDecoration: 'none', fontSize: '0.8rem', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <Users size={16} /> Physical Classes
+          </Link>
+          <Link
+            href="/admin/notifications"
+            className="btn-primary"
+            style={{ textDecoration: 'none', fontSize: '0.8rem', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <Bell size={16} /> Notifications
+          </Link>
+          <Link
+            href="/admin/certificates"
+            className="btn-primary"
+            style={{ textDecoration: 'none', fontSize: '0.8rem', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <Award size={16} /> Certificates
+          </Link>
+        </div>
       </div>
 
       {payments.length === 0 ? (
@@ -146,7 +170,7 @@ export default function AdminDashboard() {
                             onClick={() => handleReview(p.id, 'approved')}
                             disabled={processing[p.id]}
                           >
-                            {processing[p.id] ? '...' : '✓ Approve'}
+                            {processing[p.id] ? '...' : <><Check size={14} /> Approve</>}
                           </button>
                           <button
                             className="btn-primary"
@@ -154,7 +178,7 @@ export default function AdminDashboard() {
                             onClick={() => handleReview(p.id, 'rejected')}
                             disabled={processing[p.id]}
                           >
-                            {processing[p.id] ? '...' : '✕ Reject'}
+                            {processing[p.id] ? '...' : <><X size={14} /> Reject</>}
                           </button>
                         </div>
                       </div>

@@ -1,0 +1,41 @@
+{
+  "name": "Eng Luqman Hafeez Amazon Academy",
+  "short_name": "Amazon Academy",
+  "description": "Learn Amazon selling and e-commerce skills with Eng Luqman Hafeez",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/eng-pic.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/eng-pic.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "business"],
+  "shortcuts": [
+    {
+      "name": "Courses",
+      "short_name": "Courses",
+      "description": "Browse available courses",
+      "url": "/courses",
+      "icons": [{ "src": "/eng-pic.jpg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Go to student dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/eng-pic.jpg", "sizes": "96x96" }]
+    }
+  ]
+}

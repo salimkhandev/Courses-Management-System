@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { compressImage } from '@/lib/image';
 import Link from 'next/link';
+import { X, Clock, HardDrive, GraduationCap } from 'lucide-react';
 
 interface VideoFormItem {
   id?: string;
@@ -315,7 +316,7 @@ export default function EditCoursePage() {
                   style={{ width: '120px', height: '80px', objectFit: 'cover', borderRadius: '0.375rem', border: '1px solid var(--surface-2)' }} 
                 />
               ) : (
-                <div style={{ width: '120px', height: '80px', background: 'var(--surface-2)', borderRadius: '0.375rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🎓</div>
+                <div style={{ width: '120px', height: '80px', background: 'var(--surface-2)', borderRadius: '0.375rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><GraduationCap size={32} className="text-muted" /></div>
               )}
               
               <button 
@@ -416,8 +417,10 @@ export default function EditCoursePage() {
 
                   <div className="flex-1 min-w-0">
                     <h4 className="text-sm font-semibold truncate">{v.title}</h4>
-                    <p className="text-xs text-muted">
-                      ⏱ {formatDuration(v.duration)} &nbsp;|&nbsp; 💾 {(v.sizeBytes / 1024 / 1024).toFixed(1)} MB
+                    <p className="text-xs text-muted flex items-center gap-2">
+                      <span className="flex items-center gap-1"><Clock size={12} /> {formatDuration(v.duration)}</span>
+                      <span>|</span>
+                      <span className="flex items-center gap-1"><HardDrive size={12} /> {(v.sizeBytes / 1024 / 1024).toFixed(1)} MB</span>
                     </p>
                   </div>
                 </div>
@@ -446,7 +449,7 @@ export default function EditCoursePage() {
                     style={{ background: '#ef4444', color: '#fff', border: 'none', cursor: 'pointer' }}
                     onClick={() => removeVideo(i)}
                   >
-                    ✕
+                    <X size={14} />
                   </button>
                 </div>
               </div>
