@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { name, email, password } = body ?? {};
+  const { name, email, whatsapp, password } = body ?? {};
 
   if (!name || !email || !password) {
     return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
   await User.create({
     name: name.trim(),
     email: email.toLowerCase().trim(),
+    whatsapp: whatsapp?.trim() || '',
     passwordHash,
     role: 'student',   // register always creates students — admins are seeded manually
     status: 'pending',

@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
+  const [form, setForm] = useState({ name: '', email: '', whatsapp: '', password: '', confirm: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -29,7 +29,7 @@ export default function RegisterPage() {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
+      body: JSON.stringify({ name: form.name, email: form.email, whatsapp: form.whatsapp, password: form.password }),
     });
 
     const data = await res.json();
@@ -68,7 +68,7 @@ export default function RegisterPage() {
         Create an account
       </h1>
       <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>
-        Join Sunrise Academy and start your learning journey
+        Join Eng Luqman Hafeez Academy and start your learning journey
       </p>
 
       {error && <div className="alert-error mb-4">{error}</div>}
@@ -101,6 +101,20 @@ export default function RegisterPage() {
             value={form.email}
             onChange={(e) => update('email', e.target.value)}
             required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+            WhatsApp Number (optional)
+          </label>
+          <input
+            className="input"
+            type="tel"
+            autoComplete="tel"
+            placeholder="0342-5015034"
+            value={form.whatsapp}
+            onChange={(e) => update('whatsapp', e.target.value)}
           />
         </div>
 

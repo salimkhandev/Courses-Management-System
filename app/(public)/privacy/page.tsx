@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Sunrise Academy',
-  description: 'How Sunrise Academy collects, uses, and protects your data.',
+  title: 'Privacy Policy — Eng Luqman Hafeez',
+  description: 'How Eng Luqman Hafeez collects, uses, and protects your data.',
 };
 
-const SUPPORT = process.env.SUPPORT_EMAIL ?? 'sunriseacademy1122@gmail.com';
+const SUPPORT = process.env.SUPPORT_EMAIL ?? 'engluqmanhafeez@gmail.com';
 
 export default function PrivacyPage() {
   return (
@@ -43,8 +43,8 @@ export default function PrivacyPage() {
             2. Where Your Data Is Stored
           </h2>
           <ul style={{ paddingLeft: '1.25rem' }}>
-            <li>Account data &amp; payment records: <strong style={{ color: 'var(--text-primary)' }}>MongoDB Atlas</strong> (cloud database)</li>
-            <li>Payment screenshots &amp; course videos: <strong style={{ color: 'var(--text-primary)' }}>Cloudflare R2</strong> (private object storage)</li>
+            <li>Account data &amp; payment records: <strong style={{ color: 'var(--text-primary)' }}>MongoDB</strong> (local database)</li>
+            <li>Payment screenshots &amp; course videos: <strong style={{ color: 'var(--text-primary)' }}>Local Storage</strong> (private local storage)</li>
           </ul>
           <p style={{ marginTop: '0.75rem' }}>
             All stored files are private — they are never publicly accessible. Access is controlled
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
             3. Who Can See Your Data
           </h2>
           <p>
-            Only Sunrise Academy administrators can view your name, email, phone, and payment screenshots
+            Only Eng Luqman Hafeez administrators can view your name, email, phone, and payment screenshots
             for the purpose of verifying your payment. We do not sell or share your data with
             any third party.
           </p>

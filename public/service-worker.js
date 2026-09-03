@@ -159,3 +159,48 @@ self.addEventListener('message', (event) => {
     );
   }
 });
+
+// ─── Push Notifications ─────────────────────────────────────────────────────
+
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : {};
+  
+  const options = {
+    body: data.body || 'New notification from Eng Luqman Hafeez Academy',
+    icon: '/eng-pic.jpg',
+    badge: '/eng-pic.jpg',
+    vibrate: [200, 100, 200],
+    data: {
+      url: data.url || '/',
+      notificationId: data.notificationId,
+    },
+    actions: [
+      {
+        action: 'view',
+        title: 'View',
+        icon: '/eng-pic.jpg',
+      },
+      {
+        action: 'close',
+        title: 'Close',
+        icon: '/eng-pic.jpg',
+      },
+    ],
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'New Notification', options)
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  if (event.action === 'view') {
+    const url = event.notification.data?.url || '/';
+    event.waitUntil(
+      clients.openWindow(url)
+    );
+  }
+  // For 'close' action or default click, just close the notification
+});

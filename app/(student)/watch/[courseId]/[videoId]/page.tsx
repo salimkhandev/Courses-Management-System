@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { isVideoDownloaded, downloadVideoToOPFS, getOfflineVideoUrl, revokeOfflineVideoUrl } from '@/lib/opfs';
+import { Check, Download, Clock, X } from 'lucide-react';
 
 interface VideoItem {
   id: string;
@@ -204,7 +205,7 @@ export default function WatchVideoPage() {
       <header style={{ height: '60px', borderBottom: '1px solid var(--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1.5rem', background: 'var(--surface-1)' }}>
         <div className="flex items-center gap-3">
           <Link href="/dashboard" className="text-sm font-semibold text-brand-500" style={{ textDecoration: 'none' }}>
-            Sunrise Academy
+            Eng Luqman Hafeez
           </Link>
           <span className="text-muted text-xs">/</span>
           <span className="text-xs font-medium truncate max-w-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -257,16 +258,16 @@ export default function WatchVideoPage() {
             {/* Offline download button */}
             <div className="flex gap-2 items-center">
               {offline ? (
-                <span className="text-xs px-3 py-1.5 rounded-lg font-semibold bg-green-500 bg-opacity-10" style={{ color: '#22c55e', background: 'rgba(34, 197, 94, 0.1)' }}>
-                  ✓ Downloaded Offline
+                <span className="text-xs px-3 py-1.5 rounded-lg font-semibold bg-green-500 bg-opacity-10 flex items-center gap-1" style={{ color: '#22c55e', background: 'rgba(34, 197, 94, 0.1)' }}>
+                  <Check size={14} /> Downloaded Offline
                 </span>
               ) : (
-                <button 
-                  className="btn-primary text-xs px-4 py-2" 
+                <button
+                  className="btn-primary text-xs px-4 py-2 flex items-center gap-1"
                   onClick={handleDownloadOffline}
                   disabled={downloading}
                 >
-                  {downloading ? `Saving... ${downloadProgress}%` : '↓ Save for Offline'}
+                  {downloading ? `Saving... ${downloadProgress}%` : <><Download size={14} /> Save for Offline</>}
                 </button>
               )}
             </div>
@@ -307,9 +308,9 @@ export default function WatchVideoPage() {
                         {v.title}
                       </h4>
                     </div>
-                    <div className="flex justify-between text-xxs text-muted pl-4">
-                      <span>⏱ {formatDuration(v.duration)}</span>
-                      {isVideoDownloaded(v.id) && <span style={{ color: '#22c55e' }}>✓ Offline</span>}
+                    <div className="flex justify-between text-xxs text-muted pl-4 items-center gap-2">
+                      <span className="flex items-center gap-1"><Clock size={12} /> {formatDuration(v.duration)}</span>
+                      {isVideoDownloaded(v.id) && <span className="flex items-center gap-1" style={{ color: '#22c55e' }}><Check size={12} /> Offline</span>}
                     </div>
                   </div>
                 </Link>

@@ -7,6 +7,7 @@ export interface IUser extends Document {
   name: string;
   email: string;
   passwordHash: string;
+  whatsapp: string;
   role: UserRole;
   status: UserStatus;
   enrolledCourseIds: mongoose.Types.ObjectId[]; // courses student has paid for
@@ -19,6 +20,7 @@ const UserSchema = new Schema<IUser>(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
+    whatsapp: { type: String, required: false, trim: true },
     role: { type: String, enum: ['student', 'admin'], default: 'student' },
     status: {
       type: String,

@@ -116,9 +116,9 @@ This document describes the complete migration from cloud-based services (Google
 - Removed R2 presigned URL generation
 - Now only uses local storage via `getLocalFileUrl()`
 
-#### Payment Receipts (`app/api/admin/payments/receipt/[fileId]/route.ts`)
-- Removed Google Drive fallback logic
-- Now only serves files from local storage
+#### Payment Receipts
+- Removed old `/api/admin/payments/receipt/[fileId]/route.ts` route
+- Now uses unified `/api/files/[...path]/route.ts` for all file serving
 
 #### Payment Management (`app/api/admin/payments/route.ts`)
 - Removed R2 presigned URL generation

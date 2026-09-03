@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { useState } from 'react';
+import { X, Menu } from 'lucide-react';
 
 export default function AdminNavbar() {
   const pathname = usePathname();
@@ -27,7 +28,7 @@ export default function AdminNavbar() {
       {/* Top row: brand + hamburger */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link href="/admin" style={{ color: 'var(--brand-500)', fontWeight: 700, fontSize: '1.1rem', textDecoration: 'none' }}>
-          Sunrise Academy{' '}
+          Eng Luqman Hafeez{' '}
           <span style={{ color: 'var(--text-secondary)', fontSize: '0.8em', fontWeight: 500 }}>Admin</span>
         </Link>
 
@@ -73,11 +74,10 @@ export default function AdminNavbar() {
             padding: '0.35rem 0.6rem',
             cursor: 'pointer',
             color: 'var(--text-primary)',
-            fontSize: '1.1rem',
             lineHeight: 1,
           }}
         >
-          {menuOpen ? '✕' : '☰'}
+          {menuOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
       </div>
 

@@ -10,6 +10,8 @@ const STORAGE_FOLDERS = {
   VIDEOS: path.join(STORAGE_BASE_DIR, 'videos'),
   THUMBNAILS: path.join(STORAGE_BASE_DIR, 'thumbnails'),
   RECEIPTS: path.join(STORAGE_BASE_DIR, 'receipts'),
+  NOTIFICATIONS: path.join(STORAGE_BASE_DIR, 'notifications'),
+  SUCCESS_STORIES: path.join(STORAGE_BASE_DIR, 'success-stories'),
 };
 
 /**
@@ -20,6 +22,8 @@ export async function initializeStorage(): Promise<void> {
     await fs.mkdir(STORAGE_FOLDERS.VIDEOS, { recursive: true });
     await fs.mkdir(STORAGE_FOLDERS.THUMBNAILS, { recursive: true });
     await fs.mkdir(STORAGE_FOLDERS.RECEIPTS, { recursive: true });
+    await fs.mkdir(STORAGE_FOLDERS.NOTIFICATIONS, { recursive: true });
+    await fs.mkdir(STORAGE_FOLDERS.SUCCESS_STORIES, { recursive: true });
   } catch (error) {
     console.error('Failed to initialize storage directories:', error);
     throw error;
@@ -29,7 +33,7 @@ export async function initializeStorage(): Promise<void> {
 /**
  * Get the appropriate storage folder based on file type
  */
-function getStorageFolder(type: 'video' | 'thumbnail' | 'receipt'): string {
+function getStorageFolder(type: 'video' | 'thumbnail' | 'receipt' | 'notification' | 'success-story'): string {
   switch (type) {
     case 'video':
       return STORAGE_FOLDERS.VIDEOS;
@@ -37,6 +41,10 @@ function getStorageFolder(type: 'video' | 'thumbnail' | 'receipt'): string {
       return STORAGE_FOLDERS.THUMBNAILS;
     case 'receipt':
       return STORAGE_FOLDERS.RECEIPTS;
+    case 'notification':
+      return STORAGE_FOLDERS.NOTIFICATIONS;
+    case 'success-story':
+      return STORAGE_FOLDERS.SUCCESS_STORIES;
     default:
       throw new Error(`Unknown storage type: ${type}`);
   }
@@ -58,7 +66,7 @@ function generateSafeFilename(originalName: string): string {
 export async function uploadFile(
   file: Buffer | Uint8Array,
   originalName: string,
-  type: 'video' | 'thumbnail' | 'receipt'
+  type: 'video' | 'thumbnail' | 'receipt' | 'notification' | 'success-story'
 ): Promise<string> {
   await initializeStorage();
   
@@ -69,7 +77,8 @@ export async function uploadFile(
   await fs.writeFile(filePath, file);
   
   // Return relative path for database storage
-  return path.join(type === 'video' ? 'videos' : type === 'thumbnail' ? 'thumbnails' : 'receipts', filename);
+  const folderName = type === 'video' ? 'videos' : type === 'thumbnail' ? 'thumbnails' : type === 'receipt' ? 'receipts' : type === 'notification' ? 'notifications' : 'success-stories';
+  return path.join(folderName, filename);
 }
 
 /**

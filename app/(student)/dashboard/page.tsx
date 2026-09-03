@@ -4,6 +4,7 @@ import Course from '@/lib/models/Course';
 import { getLocalFileUrl } from '@/lib/localStorage';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { Video, Clock, Download, GraduationCap, Users, MessageSquare, Bell, Award, TrendingUp } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,7 +59,42 @@ export default async function StudentDashboardPage() {
                 className="text-sm font-semibold px-4 py-2 border rounded-lg hover:bg-surface-2 transition-colors flex items-center gap-2"
                 style={{ color: 'var(--text-secondary)', borderColor: 'var(--surface-2)', textDecoration: 'none' }}
               >
-                📴 Downloads
+                <Download size={16} /> Downloads
+              </Link>
+              <Link
+                href="/physical-classes"
+                className="text-sm font-semibold px-4 py-2 border rounded-lg hover:bg-surface-2 transition-colors flex items-center gap-2"
+                style={{ color: 'var(--text-secondary)', borderColor: 'var(--surface-2)', textDecoration: 'none' }}
+              >
+                <Users size={16} /> Physical Classes
+              </Link>
+              <Link
+                href="/queries"
+                className="text-sm font-semibold px-4 py-2 border rounded-lg hover:bg-surface-2 transition-colors flex items-center gap-2"
+                style={{ color: 'var(--text-secondary)', borderColor: 'var(--surface-2)', textDecoration: 'none' }}
+              >
+                <MessageSquare size={16} /> Queries
+              </Link>
+              <Link
+                href="/notifications"
+                className="text-sm font-semibold px-4 py-2 border rounded-lg hover:bg-surface-2 transition-colors flex items-center gap-2"
+                style={{ color: 'var(--text-secondary)', borderColor: 'var(--surface-2)', textDecoration: 'none' }}
+              >
+                <Bell size={16} /> Notifications
+              </Link>
+              <Link
+                href="/certificates"
+                className="text-sm font-semibold px-4 py-2 border rounded-lg hover:bg-surface-2 transition-colors flex items-center gap-2"
+                style={{ color: 'var(--text-secondary)', borderColor: 'var(--surface-2)', textDecoration: 'none' }}
+              >
+                <Award size={16} /> Certificates
+              </Link>
+              <Link
+                href="/success-stories"
+                className="text-sm font-semibold px-4 py-2 border rounded-lg hover:bg-surface-2 transition-colors flex items-center gap-2"
+                style={{ color: 'var(--text-secondary)', borderColor: 'var(--surface-2)', textDecoration: 'none' }}
+              >
+                <TrendingUp size={16} /> Success Stories
               </Link>
             </div>
           </div>
@@ -99,7 +135,7 @@ export default async function StudentDashboardPage() {
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       ) : (
-                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>🎓</div>
+                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><GraduationCap size={48} className="text-muted" /></div>
                       )}
                     </div>
 
@@ -120,9 +156,9 @@ export default async function StudentDashboardPage() {
                         {course.description}
                       </p>
 
-                      <div className="flex gap-4 text-xs text-muted">
-                        <span>📹 {course.videoCount} videos</span>
-                        <span>⏱ {formatDuration(course.totalDuration)}</span>
+                      <div className="flex gap-4 text-xs text-muted items-center">
+                        <span className="flex items-center gap-1"><Video size={12} /> {course.videoCount} videos</span>
+                        <span className="flex items-center gap-1"><Clock size={12} /> {formatDuration(course.totalDuration)}</span>
                       </div>
                     </div>
                   </div>
