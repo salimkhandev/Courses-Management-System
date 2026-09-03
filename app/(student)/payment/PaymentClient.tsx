@@ -104,10 +104,13 @@ export default function PaymentClient() {
         throw new Error(d.error || 'Failed to submit payment record');
       }
 
-      // Success! NextAuth token status won't update until session refresh, 
-      // but router.refresh() triggers a middleware check. The simplest flow
-      // is to manually navigate to pending.
-      window.location.href = '/payment/pending';
+      // Success! Use the redirect from API response
+      const responseData = await safeJson<{ success: boolean; redirect: string }>(submitRes);
+      if (responseData?.redirect) {
+        window.location.href = responseData.redirect;
+      } else {
+        window.location.href = '/payment/pending';
+      }
       
     } catch (err: any) {
       console.error('Payment submission error:', err);
@@ -172,13 +175,13 @@ export default function PaymentClient() {
 
         <div className="text-sm text-secondary p-3 rounded bg-surface-2">
           {method === 'easypaisa' && (
-            <><strong>EasyPaisa:</strong> 0342-5015034<br/>Title: Hafiz Mujeeb ur Rahman</>
+            <><strong>EasyPaisa:</strong> 0342-5015034<br/>Title: Eng Luqman Hafeez</>
           )}
           {method === 'jazzcash' && (
-            <><strong>JazzCash:</strong> 0318-5263800<br/>Title: Hafiz Mujeeb ur Rahman</>
+            <><strong>JazzCash:</strong> 0318-5263800<br/>Title: Eng Luqman Hafeez</>
           )}
           {method === 'bank' && (
-            <><strong>Meezan Bank</strong><br/>Acc: 03425015034<br/>Title: Sunrise Academy / Hafiz Mujeeb</>
+            <><strong>Meezan Bank</strong><br/>Acc: 03425015034<br/>Title: Eng Luqman Hafeez</>
           )}
         </div>
       </div>

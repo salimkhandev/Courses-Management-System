@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
   const updatedPayments = await Promise.all(
     payments.map(async (p) => {
-      const screenshotUrl = p.localScreenshotPath ? `/api/admin/payments/receipt/${p.localScreenshotPath}` : null;
+      const screenshotUrl = p.localScreenshotPath ? `/api/files/${p.localScreenshotPath}` : null;
       return {
         id: p._id.toString(),
         userId: p.userId.toString(),

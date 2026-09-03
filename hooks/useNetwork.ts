@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 
 export function useNetwork() {
   const [isOnline, setIsOnline] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -16,6 +17,7 @@ export function useNetwork() {
   }, [pathname]);
 
   useEffect(() => {
+    setMounted(true);
     if (typeof window === 'undefined') return;
 
     // Set initial status from browser API
@@ -49,6 +51,9 @@ export function useNetwork() {
     // Only run once on mount — pathname changes are tracked via ref
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  // Return true during SSR to avoid hydration mismatch
+  if (!mounted) return true;
 
   return isOnline;
 }

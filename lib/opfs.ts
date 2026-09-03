@@ -48,66 +48,85 @@ export async function downloadVideoToOPFS(
   downloadUrl: string,
   onProgress?: (progress: number) => void
 ): Promise<void> {
-  const root = await navigator.storage.getDirectory();
-  
-  // Save files as videoId.mp4 to keep it clean and collision-free
-  const filename = `${videoId}.mp4`;
-  const fileHandle = await root.getFileHandle(filename, { create: true });
-  
-  const response = await fetch(downloadUrl);
-  if (!response.ok) throw new Error('Failed to download video file.');
-  if (!response.body) throw new Error('Response body is empty.');
-
-  const contentLength = Number(response.headers.get('content-length') ?? 0);
-  const reader = response.body.getReader();
-  const writable = await (fileHandle as any).createWritable();
-
-  let receivedLength = 0;
-
   try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+    console.log('OPFS Debug: navigator.storage:', navigator.storage);
+    console.log('OPFS Debug: navigator:', navigator);
+    const root = await navigator.storage.getDirectory();
 
-      await writable.write(value);
-      receivedLength += value.length;
-      
-      if (contentLength && onProgress) {
-        onProgress(Math.round((receivedLength / contentLength) * 100));
+    // Save files as videoId.mp4 to keep it clean and collision-free
+    const filename = `${videoId}.mp4`;
+    const fileHandle = await root.getFileHandle(filename, { create: true });
+
+    const response = await fetch(downloadUrl);
+    if (!response.ok) throw new Error('Failed to download video file.');
+    if (!response.body) throw new Error('Response body is empty.');
+
+    const contentLength = Number(response.headers.get('content-length') ?? 0);
+    const reader = response.body.getReader();
+    const writable = await (fileHandle as any).createWritable();
+
+    let receivedLength = 0;
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        await writable.write(value);
+        receivedLength += value.length;
+
+        if (contentLength && onProgress) {
+          onProgress(Math.round((receivedLength / contentLength) * 100));
+        }
       }
+    } finally {
+      await writable.close();
     }
-  } finally {
-    await writable.close();
-  }
 
-  // Update metadata list
-  const list = getMetadataList();
-  const updatedList = list.filter((v) => v.videoId !== videoId);
-  updatedList.push({
-    videoId,
-    courseId,
-    courseTitle,
-    videoTitle,
-    filename,
-    sizeBytes: receivedLength || contentLength,
-    downloadedAt: new Date(),
-  });
-  saveMetadataList(updatedList);
+    // Update metadata list
+    const list = getMetadataList();
+    const updatedList = list.filter((v) => v.videoId !== videoId);
+    updatedList.push({
+      videoId,
+      courseId,
+      courseTitle,
+      videoTitle,
+      filename,
+      sizeBytes: receivedLength || contentLength,
+      downloadedAt: new Date(),
+    });
+    saveMetadataList(updatedList);
+  } catch (error: any) {
+    // Check if the error is due to insecure context
+    if (error.name === 'SecurityError' || error.message?.includes('secure context') || error.message?.includes('https')) {
+      throw new Error('Offline storage requires HTTPS. Please access the site via HTTPS to enable offline video downloads.');
+    }
+    throw error;
+  }
 }
 
 /** Get a playable Object URL for an offline video from OPFS */
 export async function getOfflineVideoUrl(videoId: string): Promise<string> {
-  const root = await navigator.storage.getDirectory();
-  const filename = `${videoId}.mp4`;
   try {
-    const fileHandle = await root.getFileHandle(filename);
-    const file = await fileHandle.getFile();
-    return URL.createObjectURL(file);
-  } catch {
-    // File handle not found — metadata may be stale; clean it up
-    const list = getMetadataList();
-    saveMetadataList(list.filter((v) => v.videoId !== videoId));
-    throw new Error(`Offline video not found in storage: ${videoId}`);
+    const root = await navigator.storage.getDirectory();
+    const filename = `${videoId}.mp4`;
+    
+    try {
+      const fileHandle = await root.getFileHandle(filename);
+      const file = await fileHandle.getFile();
+      return URL.createObjectURL(file);
+    } catch {
+      // File handle not found — metadata may be stale; clean it up
+      const list = getMetadataList();
+      saveMetadataList(list.filter((v) => v.videoId !== videoId));
+      throw new Error(`Offline video not found in storage: ${videoId}`);
+    }
+  } catch (error: any) {
+    // Check if the error is due to insecure context
+    if (error.name === 'SecurityError' || error.message?.includes('secure context') || error.message?.includes('https')) {
+      throw new Error('Offline storage requires HTTPS. Please access the site via HTTPS to enable offline video downloads.');
+    }
+    throw error;
   }
 }
 
@@ -118,12 +137,16 @@ export function revokeOfflineVideoUrl(url: string): void {
 
 /** Delete a video file from OPFS and clean up metadata */
 export async function deleteOfflineVideo(videoId: string): Promise<void> {
-  const root = await navigator.storage.getDirectory();
-  const filename = `${videoId}.mp4`;
   try {
-    await root.removeEntry(filename);
-  } catch (err) {
-    console.error('File entry not found in OPFS during deletion', err);
+    const root = await navigator.storage.getDirectory();
+    const filename = `${videoId}.mp4`;
+    try {
+      await root.removeEntry(filename);
+    } catch (err) {
+      console.error('File entry not found in OPFS during deletion', err);
+    }
+  } catch (error) {
+    console.error('OPFS access error during deletion', error);
   }
 
   const list = getMetadataList();

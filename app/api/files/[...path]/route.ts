@@ -9,11 +9,13 @@ export async function GET(
   const { path } = await ctx.params;
   const relativePath = Array.isArray(path) ? path.join('/') : path;
 
-  // For thumbnails and public files, we might want to allow public access
-  // For now, require authentication for all files
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  if (!token) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // Allow public access for thumbnails only
+  const isThumbnail = relativePath.startsWith('thumbnails/');
+  if (!isThumbnail) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
   }
 
   try {

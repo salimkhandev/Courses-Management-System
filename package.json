@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "MONGODB_URI=mongodb://localhost:27017/courses-db LOCAL_STORAGE_DIR=/var/www/storage NEXTAUTH_SECRET=dev_secret_for_testing NEXTAUTH_URL=http://16.170.23.160:3000 BACKUP_DIR=./backups next dev -H 0.0.0.0",
+    "dev:https": "MONGODB_URI=mongodb://localhost:27017/courses-db LOCAL_STORAGE_DIR=/var/www/storage NEXTAUTH_SECRET=dev_secret_for_testing NEXTAUTH_URL=https://16.170.23.160:3000 BACKUP_DIR=./backups node dev-https.js",
     "build": "next build",
     "start": "MONGODB_URI=mongodb://localhost:27017/courses-db LOCAL_STORAGE_DIR=/var/www/storage NEXTAUTH_SECRET=dev_secret_for_testing NEXTAUTH_URL=http://16.170.23.160:3000 BACKUP_DIR=./backups next start -H 0.0.0.0",
     "lint": "eslint"

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { X } from 'lucide-react';
 
 const PWAInstallButton = () => {
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -78,7 +79,7 @@ const PWAInstallButton = () => {
             {/* Top Banner State */}
             {!isBannerDismissed && (
                 <div style={{
-                    position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+                    position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
                     backgroundColor: 'var(--surface-0)',
                     borderBottom: '1px solid var(--surface-2)',
                     padding: '0.75rem 1rem',
@@ -91,10 +92,10 @@ const PWAInstallButton = () => {
                             borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                             flexShrink: 0, color: 'white', fontWeight: 'bold', fontSize: '1.25rem'
                         }}>
-                            S
+                            E
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                            <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Install Sunrise Academy</span>
+                            <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Install Eng Luqman Hafeez</span>
                             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                                 {isIOS ? "Tap Share → Add to Home Screen" : "Learn offline, no browser needed"}
                             </span>
@@ -108,9 +109,9 @@ const PWAInstallButton = () => {
                         )}
                         <button onClick={handleDismiss} style={{
                             background: 'transparent', border: 'none', color: 'var(--text-muted)',
-                            cursor: 'pointer', fontSize: '1.25rem', padding: '0.25rem 0.5rem'
+                            cursor: 'pointer', padding: '0.25rem 0.5rem'
                         }}>
-                            ✕
+                            <X size={20} />
                         </button>
                     </div>
                 </div>
@@ -119,14 +120,15 @@ const PWAInstallButton = () => {
             {/* Bottom Pill Chip State (if dismissed but still installable) */}
             {isBannerDismissed && deferredPrompt && (
                 <div style={{
-                    position: 'fixed', bottom: '2rem', right: '1.5rem', zIndex: 50
+                    position: 'fixed', bottom: '1rem', right: '1rem', zIndex: 40
                 }}>
                     <button 
                         onClick={handleInstall}
                         className="btn-primary"
                         style={{
                             borderRadius: '9999px',
-                            padding: '0.75rem 1.5rem',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.875rem',
                             display: 'flex', alignItems: 'center', gap: '0.5rem',
                             boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
                         }}
